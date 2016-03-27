@@ -2,10 +2,30 @@
 
 var path = process.cwd();
 var ClickHandler = require(path + '/app/controllers/clickHandler.server.js');
+var timeStampHandler = require(path + '/app/controllers/timeStampHandler.server.js');
+var requestHeaderParser = require(path + '/app/controllers/requestHeaderParser.server.js');
 
 module.exports = function (app, passport) {
+	
+	app.enable('trust proxy');
 
-	function isLoggedIn (req, res, next) {
+	app.route('/api/time-stamp/')
+		.get(function (req, res) {
+			res.sendFile(path + '/public/time-stamp.html');
+		});
+		
+	app.route('/api/time-stamp/:str')
+		.get(timeStampHandler);
+		
+	app.route('/api/request-header-parser/')
+		.get(requestHeaderParser);
+		
+	app.route('/')
+		.get(function (req, res) {
+			res.sendFile(path + '/public/about.html')	
+		});
+
+	/*function isLoggedIn (req, res, next) {
 		if (req.isAuthenticated()) {
 			return next();
 		} else {
@@ -14,7 +34,7 @@ module.exports = function (app, passport) {
 	}
 
 	var clickHandler = new ClickHandler();
-
+	
 	app.route('/')
 		.get(isLoggedIn, function (req, res) {
 			res.sendFile(path + '/public/index.html');
@@ -36,11 +56,12 @@ module.exports = function (app, passport) {
 			res.sendFile(path + '/public/profile.html');
 		});
 
-	app.route('/api/:id')
+	/*app.route('/api/:id')
 		.get(isLoggedIn, function (req, res) {
 			res.json(req.user.github);
 		});
-
+	
+	
 	app.route('/auth/github')
 		.get(passport.authenticate('github'));
 
@@ -54,4 +75,5 @@ module.exports = function (app, passport) {
 		.get(isLoggedIn, clickHandler.getClicks)
 		.post(isLoggedIn, clickHandler.addClick)
 		.delete(isLoggedIn, clickHandler.resetClicks);
+		*/
 };
